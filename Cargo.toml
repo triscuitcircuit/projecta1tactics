@@ -1,0 +1,11 @@
+[package]
+name = "projecta1"
+version = "0.1.0"
+authors = ["Triscuit <54428989+Triscuit-circuit@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+bevy = "0.4.0"
+bevy_tiled_prototype = {git = "https://github.com/framp/bevy_tiled"}
+bevy_kira_audio = {git="https://github.com/NiklasEi/bevy_kira_audio", branch = "main"}

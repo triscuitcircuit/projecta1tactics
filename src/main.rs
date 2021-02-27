@@ -3,36 +3,43 @@ use bevy::{prelude::*, render::camera::Camera};
 use bevy_tiled_prototype::TiledMapCenter;
 use std::collections::HashMap;
 use bevy_kira_audio::{Audio, AudioChannel, AudioPlugin, AudioSource};
+use bevy_inspector_egui::InspectorPlugin;
+use projecta1::backend::tactics_audio::*;
+
 
 fn main() {
     let mut app = App::build();
         app
             .add_resource(Msaa{samples: 4})
             .add_resource(WindowDescriptor{
-                title: "mmm".to_string(),
+                title: "ProjectA1".to_string(),
                 ..Default::default()
             })
-            .add_plugins(DefaultPlugins)
+            .add_plugins_with(DefaultPlugins, |group| {
+                group.disable::<bevy::audio::AudioPlugin>()
+            })
+            //.add_plugin(InspectorPlugin::<Data>::new())
             .add_plugin(AudioPlugin)
+            .add_system(check_audio_loading.system())
             .add_plugin(bevy_tiled_prototype::TiledMapPlugin)
             .add_startup_system(setup.system())
             .add_system(camera_movement.system());
     app.run()
 }
-
 fn setup(commands: &mut Commands, asset_server: Res<AssetServer>, audio: Res<Audio>) {
-    let music = asset_server.load("sounds/Battle1.mp3");
-    audio.play(music);
+    // let music = asset_server.load("sounds/Battle1.mp3");
+    // audio.play(music);
+
+
     commands
         .spawn(bevy_tiled_prototype::TiledMapComponents {
-            map_asset: asset_server.load("phototest2.tmx"),
+            map_asset: asset_server.load("phototest.tmx"),
             center: TiledMapCenter(true),
             origin: Transform::from_scale(Vec3::new(1.6, 1.6, 1.0)),
             ..Default::default()
         })
         .spawn(Camera2dBundle::default());
 }
-
 fn camera_movement(
     time: Res<Time>,
     keyboard_input: Res<Input<KeyCode>>,

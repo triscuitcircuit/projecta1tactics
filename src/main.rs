@@ -5,11 +5,13 @@ use std::collections::HashMap;
 use bevy_kira_audio::{Audio, AudioChannel, AudioPlugin, AudioSource};
 use bevy_inspector_egui::InspectorPlugin;
 use projecta1::backend::tactics_audio::*;
+use projecta1::backend::interface::*;
 
 
 fn main() {
     let mut app = App::build();
         app
+            .init_resource::<ButtonMaterials>()
             .add_resource(Msaa{samples: 4})
             .add_resource(WindowDescriptor{
                 title: "ProjectA1".to_string(),
@@ -20,20 +22,26 @@ fn main() {
             })
             //.add_plugin(InspectorPlugin::<Data>::new())
             .add_plugin(AudioPlugin)
+            .add_startup_system(prepare_audio.system())
+            .add_startup_system(setup_buttons.system())
+            .add_startup_system(setup.system())
             .add_system(check_audio_loading.system())
             .add_plugin(bevy_tiled_prototype::TiledMapPlugin)
-            .add_startup_system(setup.system())
+            .add_system(button_system.system())
             .add_system(camera_movement.system());
     app.run()
 }
-fn setup(commands: &mut Commands, asset_server: Res<AssetServer>, audio: Res<Audio>) {
-    // let music = asset_server.load("sounds/Battle1.mp3");
-    // audio.play(music);
+
+
+fn setup(commands: &mut Commands, asset_server: Res<AssetServer>, audio: Res<Audio>, button_materials: Res<ButtonMaterials>) {
+
+     let music = asset_server.load("sounds/Battle1(Looped).wav");
+     audio.play_looped(music);
 
 
     commands
         .spawn(bevy_tiled_prototype::TiledMapComponents {
-            map_asset: asset_server.load("phototest.tmx"),
+            map_asset: asset_server.load("phototest2.tmx"),
             center: TiledMapCenter(true),
             origin: Transform::from_scale(Vec3::new(1.6, 1.6, 1.0)),
             ..Default::default()

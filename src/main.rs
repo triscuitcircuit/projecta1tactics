@@ -41,7 +41,7 @@ fn setup(commands: &mut Commands, asset_server: Res<AssetServer>, audio: Res<Aud
 
     commands
         .spawn(bevy_tiled_prototype::TiledMapComponents {
-            map_asset: asset_server.load("phototest2.tmx"),
+            map_asset: asset_server.load("corrected.tmx"),
             center: TiledMapCenter(true),
             origin: Transform::from_scale(Vec3::new(1.6, 1.6, 1.0)),
             ..Default::default()

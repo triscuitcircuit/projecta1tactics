@@ -10,25 +10,25 @@ use projecta1::backend::interface::*;
 
 fn main() {
     let mut app = App::build();
-        app
-            .init_resource::<ButtonMaterials>()
-            .add_resource(Msaa{samples: 4})
-            .add_resource(WindowDescriptor{
-                title: "ProjectA1".to_string(),
-                ..Default::default()
-            })
-            .add_plugins_with(DefaultPlugins, |group| {
-                group.disable::<bevy::audio::AudioPlugin>()
-            })
-            //.add_plugin(InspectorPlugin::<Data>::new())
-            .add_plugin(AudioPlugin)
-            .add_startup_system(prepare_audio.system())
-            .add_startup_system(setup_buttons.system())
-            .add_startup_system(setup.system())
-            .add_system(check_audio_loading.system())
-            .add_plugin(bevy_tiled_prototype::TiledMapPlugin)
-            .add_system(button_system.system())
-            .add_system(camera_movement.system());
+    app
+        .add_resource(Msaa{samples: 4})
+        .add_resource(WindowDescriptor{
+            title: "ProjectA1".to_string(),
+            ..Default::default()
+        })
+        .add_plugins_with(DefaultPlugins, |group| {
+            group.disable::<bevy::audio::AudioPlugin>()
+        })
+        .init_resource::<ButtonMaterials>()
+        //.add_plugin(InspectorPlugin::<Data>::new())
+        .add_plugin(AudioPlugin)
+        .add_startup_system(prepare_audio.system())
+        .add_startup_system(setup_buttons.system())
+        .add_startup_system(setup.system())
+        .add_system(check_audio_loading.system())
+        .add_plugin(bevy_tiled_prototype::TiledMapPlugin)
+        .add_system(button_system.system())
+        .add_system(camera_movement.system());
     app.run()
 }
 

@@ -23,17 +23,17 @@ fn main() {
         //.add_plugin(InspectorPlugin::<Data>::new())
         .add_plugin(AudioPlugin)
         .add_startup_system(prepare_audio.system())
-        .add_startup_system(setup_buttons.system())
+        //.add_startup_system(setup_sideview.system())
         .add_startup_system(setup.system())
         .add_system(check_audio_loading.system())
         .add_plugin(bevy_tiled_prototype::TiledMapPlugin)
-        .add_system(button_system.system())
+        //.add_system(button_system.system())
         .add_system(camera_movement.system());
     app.run()
 }
 
 
-fn setup(commands: &mut Commands, asset_server: Res<AssetServer>, audio: Res<Audio>, button_materials: Res<ButtonMaterials>) {
+fn setup(commands: &mut Commands, asset_server: Res<AssetServer>, audio: Res<Audio>, mut materials: ResMut<Assets<ColorMaterial>>) {
 
      let music = asset_server.load("sounds/Battle1(Looped).wav");
      audio.play_looped(music);
@@ -46,13 +46,39 @@ fn setup(commands: &mut Commands, asset_server: Res<AssetServer>, audio: Res<Aud
             origin: Transform::from_scale(Vec3::new(1.6, 1.6, 1.0)),
             ..Default::default()
         })
-        .spawn(Camera2dBundle::default());
+        .spawn(Camera2dBundle::default())
+        .with_children(|parent|{
+            parent.spawn(CameraUiBundle::default());
+            parent.spawn(NodeBundle{
+               style: Style{
+                   size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                   justify_content: JustifyContent::SpaceBetween,
+                   ..Default::default()
+               },
+               material: materials.add(Color::NONE.into()),
+                ..Default::default()
+            })
+                .with_children(|parent|{
+                    parent
+                        .spawn(NodeBundle{
+                            style: Style{
+                                size: Size::new(Val::Px(200.0),Val::Percent(100.0)),
+                                border: Rect::all(Val::Px(2.0)),
+                                ..Default::default()
+                            },
+                            material: materials.add(Color::rgb(0.65,0.65,0.65).into()),
+                            ..Default::default()
+                        });
+                });
+        });
 }
 fn camera_movement(
+    commands: &mut Commands,
     time: Res<Time>,
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(&Camera, &mut Transform)>,
 ) {
+    //let a= commands.lookup(CameraUiBundle);
     for (_, mut transform) in query.iter_mut() {
         let mut direction = Vec3::zero();
         let scale = transform.scale.x;

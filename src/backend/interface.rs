@@ -45,6 +45,58 @@ pub fn button_system(
         }
     }
 }
+
+pub fn setup_sideview(
+    commands: &mut Commands,
+    asset_server: Res<AssetServer>,
+    mut materials: ResMut<Assets<ColorMaterial>>){
+    commands
+        //ui camera
+        .spawn(CameraUiBundle::default())
+        //root node
+        .spawn(NodeBundle{
+            style: Style{
+                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                justify_content: JustifyContent::SpaceBetween,
+                ..Default::default()
+            },
+            material: materials.add(Color::NONE.into()),
+            ..Default::default()
+        })
+        .with_children(|parent|{
+            parent
+                .spawn(NodeBundle{
+                    style: Style{
+                        size: Size::new(Val::Px(200.0),Val::Percent(100.0)),
+                        border: Rect::all(Val::Px(2.0)),
+                        ..Default::default()
+                    },
+                    material: materials.add(Color::rgb(0.65,0.65,0.65).into()),
+                    ..Default::default()
+                })
+                .with_children(|parent|{
+                    parent.spawn(TextBundle{
+                        style: Style{
+                            margin: Rect::all(Val::Px(5.0)),
+                            ..Default::default()
+                        },
+                        text: Text{
+                            value: "Text Example".to_string(),
+                            font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                            style: TextStyle{
+                                font_size: 30.0,
+                                color: Color::WHITE,
+                                ..Default::default()
+                            },
+                        },
+                        ..Default::default()
+                    });
+                });
+        })
+    ;
+
+}
+
 pub fn setup_buttons(commands: &mut Commands,
                      asset_server: Res<AssetServer>,
                      button_materials: Res<ButtonMaterials>,
